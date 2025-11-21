@@ -7,7 +7,7 @@ services:
       - DB_HOST=db
       - DB_USER=root
       - DB_PASSWORD=root123
-      - DB_NAME=portfolio_api
+      - DB_NAME=api_hybridge_community
       - DB_PORT=3306
     depends_on:
       db:
@@ -15,15 +15,15 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    command: npx ts-node src/server.ts
+    command: node dist/server.js
 
   db:
     image: mysql:8.0
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root123
-      - MYSQL_DATABASE=portfolio_api
+      - MYSQL_DATABASE=api_hybridge_community
     volumes:
       - mysql_data:/var/lib/mysql
       - ./src/DB:/docker-entrypoint-initdb.d
@@ -32,6 +32,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_HOST=db
+      - PMA_USER=root
+      - PMA_PASSWORD=root123
+    depends_on:
+      - db
 
 volumes:
   mysql_data:
