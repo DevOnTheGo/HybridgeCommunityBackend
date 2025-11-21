@@ -1,5 +1,5 @@
-CREATE DATABASE "hybridge_community";
-USE "hybridge_community";
+CREATE DATABASE "api_hybridge_community";
+USE "api_hybridge_community";
 
 CREATE TABLE role (
     id INT AUTO_INCREMENT PRIMARY KEY,
