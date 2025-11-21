@@ -1,6 +1,3 @@
-CREATE DATABASE "api_hybridge_community";
-USE "api_hybridge_community";
-
 CREATE TABLE role (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE,
