@@ -1,0 +1,62 @@
+CREATE DATABASE "hybridge_community";
+USE "hybridge_community";
+
+CREATE TABLE role (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    access JSON NOT NULL,
+    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME NULL ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE career (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME NULL ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    matriculationNumber VARCHAR(20) NOT NULL UNIQUE,
+    careerId INT NOT NULL,
+    semester INT NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    roleId INT NOT NULL,
+    imageProfile VARCHAR(255) NULL,
+    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (careerId) REFERENCES career(id),
+    FOREIGN KEY (roleId) REFERENCES role(id)
+);
+
+CREATE TABLE posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+    title VARCHAR(150) NOT NULL,
+    description TEXT NOT NULL,
+    urlImage VARCHAR(255) NULL,
+    tags JSON NULL,
+    status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+    rejectionReason TEXT NULL,
+    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES user(id)
+);
+
+CREATE TABLE apikey (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+    `key` VARCHAR(255) NOT NULL UNIQUE,
+    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    renewedAt DATETIME NULL,
+    expiredAt DATETIME NOT NULL,
+    timesOfUse INT NOT NULL DEFAULT 0,
+    FOREIGN KEY (userId) REFERENCES user(id)
+);
+
+CREATE INDEX idx_posts_userId ON posts(userId);
+CREATE INDEX idx_posts_status ON posts(status);
+CREATE INDEX idx_apikey_userId ON apikey(userId);
